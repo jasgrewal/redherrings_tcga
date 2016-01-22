@@ -1,3 +1,4 @@
+#Improve subsampling routine
 score_C <- function(sub_d_m, sub_d_n,d_sum,p) { #d_orig is subsampled matrix, d_sum is sum from submatrix of collapsed sums, p is average proportion of ones
   dimprod=sub_d_m*sub_d_n*p #Expected ones in this submatrix?
   k=d_sum #How many ones actually in this submatrix?
