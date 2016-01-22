@@ -1,20 +1,33 @@
 ---
 title: "bicbin_algorithm"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    theme: united
 ---
+## This document is derived from the algorithm described in 
+**"Biclustering Sparse Binary Genomic Data" (Uitert et al)**
+*The Journal of Computational Biology, Vol 15, Number 10, 2008*
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+### The algorithm relies on a scoring function, defined here:
 ```{r}
-summary(cars)
+score_C <- function(sub_d_m, sub_d_n,d_sum,p) { #d_orig is subsampled matrix, d_sum is sum from submatrix of collapsed sums, p is average proportion of ones
+  dimprod=sub_d_m*sub_d_n*p #Expected ones in this submatrix?
+  k=d_sum #How many ones actually in this submatrix?
+  #Calculate score
+  if((k >= dimprod) & (k <= (2*dimprod))) {
+    return ((k-dimprod)^2)/(3*(sub_d_m+1)*(sub_d_n+1)*p)
+  } else {
+    if(k > (2*dimprod)){
+      return ((k-dimprod)^2)/(sub_d_m*sub_d_n*(k + dimprod))
+    } else{
+      return (0) #Only defined for k >= mnp?
+    }
+  }
+}
+```
+```
+-This function assumes an average proportion of 1's in the large matrix and uses the expected number of ones based on the subsampled matrix size to calculate a 'concentration score' for the subsampled matrix. 
+-Note that a significant elevation in score is expected when the subsampled matrix has a concentration that is twice more than that expected
 ```
 
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-plot(cars)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
